@@ -1,0 +1,77 @@
+.pictether-image { display: inline-block; max-width: 100%; vertical-align: middle; }
+.pictether-image img { display: block; max-width: 100%; height: auto; }
+.pictether-image > span { color: var(--text-muted); font-size: var(--font-smaller); overflow-wrap: anywhere; }
+.pictether-preview { display: block; max-width: 100%; max-height: 80vh; object-fit: contain; margin: auto; }
+.pictether-preview-modal { width: min(1100px, 94vw); max-width: 94vw; }
+.pictether-preview-modal .modal-content { max-height: 85vh; overflow: auto; }
+.pictether-preview-modal .pictether-asset { display: block; }
+.pictether-preview-modal .pictether-asset video { width: 100%; max-height: 80vh; }
+.pictether-preview-modal .pictether-pdf { width: 100%; }
+.pictether-image img[title] { cursor: zoom-in; }
+.pictether-image-status { color: var(--text-muted); font-size: var(--font-smaller); overflow-wrap: anywhere; }
+.pictether-asset { display: inline-block; max-width: 100%; vertical-align: top; }
+.pictether-asset video { display: block; width: min(640px, 65vw); max-width: 100%; height: auto; }
+.pictether-pdf { width: min(700px, 65vw); max-width: 100%; }
+.pictether-pdf-toolbar { display: flex; align-items: center; gap: 0.75em; margin: 0.4em 0; }
+.pictether-pdf-canvas { display: block; max-width: 100%; height: auto; }
+.pictether-asset > a { display: block; font-size: var(--font-smaller); margin: 0.3em 0; }
+
+/* Text files must have a real line box inside host image widgets. Avoid block
+   link margins overflowing the image widget's cached height on adjacent lines. */
+.pictether-file-host { min-height: 1.5em; line-height: var(--line-height-normal, 1.5); }
+.pictether-asset.pictether-file { vertical-align: baseline; line-height: var(--line-height-normal, 1.5); }
+.pictether-asset.pictether-file > a { display: inline; margin: 0; font-size: inherit; white-space: normal; overflow-wrap: anywhere; }
+
+/* Settings: theme-native surfaces, quiet structure and restrained status color. */
+.pictether-settings { max-width: 820px; }
+.pictether-settings > h2 { margin-bottom: 28px; font-weight: 600; }
+.pictether-settings-section { margin: 0 0 30px; padding-top: 22px; border-top: 1px solid var(--background-modifier-border); }
+.pictether-settings-section h3 { margin: 0 0 14px; font-size: var(--font-ui-medium); font-weight: 600; }
+.pictether-settings .setting-item { padding: 12px 0; border: 0; }
+.pictether-settings .setting-item-control { min-width: 0; flex-wrap: wrap; }
+.pictether-settings .setting-item-control input[type="text"] { width: min(280px, 40vw); max-width: 100%; }
+.pictether-settings-caption { color: var(--text-muted); font-size: var(--font-ui-small); }
+.pictether-section-actions { display: flex; justify-content: flex-end; margin-top: 4px; padding: 4px 0; }
+.pictether-section-actions > button { height: 28px; padding: 0 10px; font-size: var(--font-ui-small); }
+.pictether-settings-advanced { margin: 8px 0; color: var(--text-muted); font-size: var(--font-ui-small); }
+.pictether-settings-advanced summary { width: fit-content; }
+.pictether-rk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 20px 0 10px; font-size: var(--font-ui-small); font-weight: 500; }
+.pictether-rk-list { border: 1px solid var(--background-modifier-border); border-radius: 10px; overflow: hidden; }
+.pictether-rk-empty { display: flex; align-items: center; gap: 10px; padding: 20px 16px; color: var(--text-muted); font-size: var(--font-ui-small); }
+.pictether-rk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 16px; }
+.pictether-rk-row + .pictether-rk-row { border-top: 1px solid var(--background-modifier-border); }
+.pictether-rk-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pictether-settings button.pictether-icon-button { width: 30px; height: 30px; padding: 6px; border: 0; background: transparent; box-shadow: none; color: var(--text-muted); }
+.pictether-settings button.pictether-icon-button:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+.pictether-settings button.pictether-icon-button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
+.pictether-rk-identity { display: flex; flex-direction: column; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
+.pictether-rk-mask { letter-spacing: 2px; font-size: var(--font-ui-small); color: var(--text-faint); }
+.pictether-rk-status { margin-left: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); white-space: nowrap; }
+.pictether-rk-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pictether-rk-current { font-size: var(--font-ui-small); color: var(--text-muted); }
+.pictether-subtle-button { color: var(--text-muted); }
+.pictether-status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex: 0 0 7px; background: var(--text-faint); }
+.pictether-status-dot.is-ok { background: var(--color-green); }
+.pictether-status-dot.is-error { background: var(--color-red); }
+.pictether-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 6px 0 10px; }
+.pictether-stat { display: flex; flex-direction: column; gap: 6px; }
+.pictether-stat-value { font-size: calc(var(--font-ui-large) * 1.7); font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-normal); overflow-wrap: anywhere; }
+.pictether-credential-modal { width: min(520px, 92vw); }
+.pictether-credential-modal .setting-item { flex-wrap: wrap; gap: 10px; }
+.pictether-credential-modal .setting-item-control { min-width: 0; }
+.pictether-credential-modal input { max-width: 100%; }
+.pictether-credential-feedback { display: flex; align-items: baseline; gap: 9px; margin: 18px 0; font-size: var(--font-ui-small); color: var(--text-muted); overflow-wrap: anywhere; }
+.pictether-dialog-actions { border: 0; padding-top: 20px; }
+.pictether-reset-ack { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; }
+.pictether-reset-ack input { flex: 0 0 auto; margin-top: 3px; }
+.pictether-reset-modal { width: min(580px, 92vw); }
+.pictether-reset-summary { white-space: pre-line; overflow-wrap: anywhere; }
+@media (max-width: 520px) {
+  .pictether-rk-row { gap: 10px; padding: 12px; }
+  .pictether-rk-status { white-space: normal; }
+  .pictether-rk-controls { gap: 8px; }
+  .pictether-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .pictether-settings .setting-item { flex-wrap: wrap; gap: 10px; }
+  .pictether-settings .setting-item-control input[type="text"] { width: 100%; }
+}
+

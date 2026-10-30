@@ -1,0 +1,46 @@
+{
+  "name": "obsidian-pictether",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first external attachments for Obsidian Desktop",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "dev": "node esbuild.config.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "package": "npm run build && node package.mjs",
+    "licenses": "node licenses.mjs"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^27.4.0",
+    "obsidian": "^1.11.4",
+    "typescript": "^5.9.0",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.900.0",
+    "@codemirror/language": "^6.11.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.38.0",
+    "@lezer/common": "^1.2.0",
+    "@lezer/markdown": "^1.4.0",
+    "saxes": "^6.0.0"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "license": "MIT",
+  "author": "Erix",
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "attachments",
+    "s3",
+    "cloudflare-r2"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "pictether",
+  "name": "Pictether",
+  "version": "0.1.0",
+  "minAppVersion": "1.11.4",
+  "description": "Local-first external attachments with optional S3-compatible backup and recovery.",
+  "author": "Erix",
+  "authorUrl": "https://github.com/dhengsun",
+  "isDesktopOnly": true
+}

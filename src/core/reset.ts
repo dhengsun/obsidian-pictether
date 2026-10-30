@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
@@ -19,20 +20,20 @@ async function canonical(file:string):Promise<string>{
   try{return await fs.realpath(file);}catch(error){if(!missing(error))throw error;const parent=path.dirname(file);if(parent===file)throw error;return path.join(await canonical(parent),path.basename(file));}
 }
 async function safeRoot(root:string,protectedPaths:string[]):Promise<string>{
-  if(!path.isAbsolute(root))throw new LocalResetError('重置已停止：附件根目录必须是绝对路径。');
+  if(!path.isAbsolute(root))throw new LocalResetError(t("重置已停止：附件根目录必须是绝对路径。"));
   const resolved=await canonical(root),home=await canonical(os.homedir());
-  if(resolved===path.parse(resolved).root||inside(resolved,home))throw new LocalResetError('重置已停止：不能清理系统根目录或用户主目录。');
+  if(resolved===path.parse(resolved).root||inside(resolved,home))throw new LocalResetError(t("重置已停止：不能清理系统根目录或用户主目录。"));
   for(const protectedPath of protectedPaths){
     const target=await canonical(protectedPath);
-    if(inside(resolved,target)||inside(target,resolved))throw new LocalResetError('重置已停止：附件目录不能包含笔记库，也不能位于笔记库或插件目录内。');
+    if(inside(resolved,target)||inside(target,resolved))throw new LocalResetError(t("重置已停止：附件目录不能包含笔记库，也不能位于笔记库或插件目录内。"));
   }
   // An explicitly configured symlink is never a deletion target.
-  try{if((await fs.lstat(root)).isSymbolicLink())throw new LocalResetError('重置已停止：附件根目录是符号链接。');}catch(error){if(!missing(error))throw error;}
+  try{if((await fs.lstat(root)).isSymbolicLink())throw new LocalResetError(t("重置已停止：附件根目录是符号链接。"));}catch(error){if(!missing(error))throw error;}
   return resolved;
 }
 async function identity(file:string,kind:ResetEntry['kind']):Promise<string>{
   const value=await fs.lstat(file,{bigint:true});
-  if(value.isSymbolicLink()||(kind==='file'?!value.isFile():!value.isDirectory()))throw new LocalResetError('重置已停止：受管理路径中存在符号链接或异常文件类型。');
+  if(value.isSymbolicLink()||(kind==='file'?!value.isFile():!value.isDirectory()))throw new LocalResetError(t("重置已停止：受管理路径中存在符号链接或异常文件类型。"));
   return `${value.dev}:${value.ino}:${value.size}:${value.mtimeNs}:${value.ctimeNs}`;
 }
 function managed(key:string):boolean{try{validateRecordKey(key);return true;}catch{return false;}}
@@ -68,7 +69,7 @@ export async function scanLocalReset(root:string,protectedPaths:string[]):Promis
         let valid=true;try{validateNamespace(item.name.slice(0,-5));}catch{valid=false;}
         if(valid){await add(child,'file');continue;}
       }
-      if(item.isSymbolicLink())throw new LocalResetError('重置已停止：附件目录中存在符号链接，请先人工检查。');
+      if(item.isSymbolicLink())throw new LocalResetError(t("重置已停止：附件目录中存在符号链接，请先人工检查。"));
       unknown.push(child);
     }
   };
@@ -80,7 +81,7 @@ export async function scanLocalReset(root:string,protectedPaths:string[]):Promis
 /** Called only after UI confirmation and quiescing plugin work. Never touches OSS. */
 export async function clearLocalAttachments(plan:LocalResetPlan,protectedPaths:string[]):Promise<LocalResetPlan>{
   const current=await scanLocalReset(plan.root,protectedPaths);
-  if(current.fingerprint!==plan.fingerprint)throw new LocalResetError('本地附件范围已变化，请重新打开重置确认框。');
+  if(current.fingerprint!==plan.fingerprint)throw new LocalResetError(t("本地附件范围已变化，请重新打开重置确认框。"));
   const directories=plan.entries.filter(entry=>entry.kind==='directory').sort((a,b)=>b.key.split('/').length-a.key.split('/').length);
   const anchors=new Map<string,string>([['',plan.rootIdentity],...directories.map(entry=>[entry.key,entry.identity] as const)]);
   const verifyParents=async(key:string)=>{
@@ -89,7 +90,7 @@ export async function clearLocalAttachments(plan:LocalResetPlan,protectedPaths:s
       const relative=parent==='.'?'':parent,expected=anchors.get(relative);
       const actual=await identity(path.join(plan.root,relative),'directory');
       // Directory contents change during our own unlink operations; dev/inode must remain fixed.
-      if(!expected||actual.split(':').slice(0,2).join(':')!==expected.split(':').slice(0,2).join(':'))throw new LocalResetError('重置已停止：附件目录身份发生变化。');
+      if(!expected||actual.split(':').slice(0,2).join(':')!==expected.split(':').slice(0,2).join(':'))throw new LocalResetError(t("重置已停止：附件目录身份发生变化。"));
       if(!relative)break;parent=path.posix.dirname(relative);
     }
   };
@@ -98,7 +99,7 @@ export async function clearLocalAttachments(plan:LocalResetPlan,protectedPaths:s
     if(entry.kind!=='file')continue;
     await verifyParents(entry.key);
     const file=path.join(plan.root,entry.key);
-    if(await identity(file,'file')!==entry.identity)throw new LocalResetError('重置已停止：待删除文件发生变化，请重新确认。');
+    if(await identity(file,'file')!==entry.identity)throw new LocalResetError(t("重置已停止：待删除文件发生变化，请重新确认。"));
     await fs.unlink(file);
     if(++count%128===0)await new Promise<void>(resolve=>setImmediate(resolve));
   }
@@ -107,7 +108,7 @@ export async function clearLocalAttachments(plan:LocalResetPlan,protectedPaths:s
     try{await fs.rmdir(path.join(plan.root,entry.key));}catch(error){if(!['ENOTEMPTY','EEXIST'].includes((error as NodeJS.ErrnoException).code??''))throw error;}
   }
   const remaining=await scanLocalReset(plan.root,protectedPaths);
-  if(remaining.entries.some(entry=>entry.kind==='file')||remaining.rootIdentity.split(':').slice(0,2).join(':')!==plan.rootIdentity.split(':').slice(0,2).join(':'))throw new LocalResetError('重置期间本地附件范围发生变化，请重新确认剩余文件。');
+  if(remaining.entries.some(entry=>entry.kind==='file')||remaining.rootIdentity.split(':').slice(0,2).join(':')!==plan.rootIdentity.split(':').slice(0,2).join(':'))throw new LocalResetError(t("重置期间本地附件范围发生变化，请重新确认剩余文件。"));
   return remaining;
 }
 /** Only the reset action may discard these plugin-generated state backups. */

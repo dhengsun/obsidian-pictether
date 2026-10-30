@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import type { AssetResources as ImageResources } from './resources';
 import { mountNativeMediaProxy, NATIVE_MEDIA_PROXY_SOURCE } from './file-decorations';
 import { parseReference } from '../core/references';
@@ -42,7 +43,7 @@ export class NativeImageBridge {
     const entry = this.images.get(image);
     if (!entry?.resolvedUrl || !this.root.contains(image)) return;
     event.preventDefault();event.stopImmediatePropagation();
-    const alt = image.getAttribute('alt') ?? 'Attachment';
+    const alt = image.getAttribute('alt') ?? t("Attachment");
     if (entry.media) this.resources.preview(entry.resolvedUrl, alt, entry.uri);
     else this.resources.preview(entry.resolvedUrl, alt);
   };
@@ -82,7 +83,7 @@ export class NativeImageBridge {
       }
       const status = image.ownerDocument.createElement('span');
       status.className = 'pictether-image-status';
-      status.textContent = 'Loading image…';
+      status.textContent = t("Loading image…");
       image.after(status);
       const entry: NativeImage = { uri, status, release: () => {}, detachEvents: () => {} };
       this.images.set(image, entry);
@@ -95,7 +96,7 @@ export class NativeImageBridge {
         this.measure();
       };
       const onLoad = () => { if (active()) { status.remove(); this.measure(); } };
-      const onError = () => { if (entry.url&&!entry.media) failed(`Cannot decode image: ${uri}`); };
+      const onError = () => { if (entry.url&&!entry.media) failed(t("Cannot decode image: {0}", uri)); };
       image.addEventListener('load', onLoad);
       image.addEventListener('error', onError);
       entry.detachEvents = () => { image.removeEventListener('load', onLoad); image.removeEventListener('error', onError); };
@@ -117,7 +118,7 @@ export class NativeImageBridge {
             const host=image.parentElement;
             const file=asset.format.kind==='file';
             if(file)host?.classList.add('pictether-file-host');
-            const unmount=mountAsset(wrapper,uri,image.getAttribute('alt')??'Attachment',this.resources,this.measure);
+            const unmount=mountAsset(wrapper,uri,image.getAttribute('alt')??t("Attachment"),this.resources,this.measure);
             const proxy=image.tagName==='IMG'?mountNativeMediaProxy(image as HTMLImageElement,wrapper,this.measure):undefined;
             if(proxy){entry.url=NATIVE_MEDIA_PROXY_SOURCE;entry.refreshSource=proxy.refresh;}
             const detach=entry.detachEvents;
@@ -125,7 +126,7 @@ export class NativeImageBridge {
           }
           status.remove();
           this.measure();
-        }, () => failed(`Image unavailable: ${uri}. Check Assets Root or run Restore Missing Attachments.`));
+        }, () => failed(t("Image unavailable: {0}. Check Assets Root or run Restore Missing Attachments.", uri)));
       } catch { failed(`Invalid Pictether reference: ${uri}`); }
     }
   }

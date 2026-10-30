@@ -22,56 +22,114 @@
 .pictether-asset.pictether-file { vertical-align: baseline; line-height: var(--line-height-normal, 1.5); }
 .pictether-asset.pictether-file > a { display: inline; margin: 0; font-size: inherit; white-space: normal; overflow-wrap: anywhere; }
 
-/* Settings: theme-native surfaces, quiet structure and restrained status color. */
-.pictether-settings { max-width: 820px; }
-.pictether-settings > h2 { margin-bottom: 28px; font-weight: 600; }
-.pictether-settings-section { margin: 0 0 30px; padding-top: 22px; border-top: 1px solid var(--background-modifier-border); }
-.pictether-settings-section h3 { margin: 0 0 14px; font-size: var(--font-ui-medium); font-weight: 600; }
-.pictether-settings .setting-item { padding: 12px 0; border: 0; }
-.pictether-settings .setting-item-control { min-width: 0; flex-wrap: wrap; }
-.pictether-settings .setting-item-control input[type="text"] { width: min(280px, 40vw); max-width: 100%; }
-.pictether-settings-caption { color: var(--text-muted); font-size: var(--font-ui-small); }
-.pictether-section-actions { display: flex; justify-content: flex-end; margin-top: 4px; padding: 4px 0; }
-.pictether-section-actions > button { height: 28px; padding: 0 10px; font-size: var(--font-ui-small); }
-.pictether-settings-advanced { margin: 8px 0; color: var(--text-muted); font-size: var(--font-ui-small); }
-.pictether-settings-advanced summary { width: fit-content; }
-.pictether-rk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 20px 0 10px; font-size: var(--font-ui-small); font-weight: 500; }
-.pictether-rk-list { border: 1px solid var(--background-modifier-border); border-radius: 10px; overflow: hidden; }
-.pictether-rk-empty { display: flex; align-items: center; gap: 10px; padding: 20px 16px; color: var(--text-muted); font-size: var(--font-ui-small); }
-.pictether-rk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 16px; }
+/* Let Obsidian size and center its own settings pane. These rules only lay
+   out our controls inside that content box; never cap the host container. */
+.pictether-settings { container-type: inline-size; container-name: pictether-settings; }
+.pictether-settings-section { min-width: 0; margin-bottom: var(--size-4-6, 24px); }
+.pictether-settings-section:last-child { margin-bottom: 0; }
+.pictether-settings .setting-item-control { min-width: 0; }
+.pictether-settings .setting-item-control input[type="text"] { width: clamp(180px, 40cqw, 380px); max-width: 100%; }
+.pictether-settings .pictether-vault-setting { flex-direction: row; align-items: center; }
+.pictether-settings .pictether-vault-setting .setting-item-control { flex: 0 1 55%; justify-content: flex-end; }
+.pictether-settings .pictether-button-setting { flex-direction: row; align-items: center; column-gap: 20px; }
+.pictether-settings .pictether-button-setting .setting-item-control { width: auto; flex: 0 0 auto; }
+.pictether-settings .pictether-button-setting .setting-item-control > button { width: auto; white-space: nowrap; }
+.pictether-readonly-value { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: var(--font-ui-small); user-select: text; }
+.pictether-settings-caption { margin: var(--size-4-3, 12px) var(--setting-items-padding-x, 16px) 0; color: var(--text-muted); font-size: var(--font-ui-smaller); line-height: var(--line-height-normal, 1.5); }
+.pictether-section-actions { display: flex; justify-content: flex-end; gap: var(--size-4-2, 8px); margin-top: var(--size-4-2, 8px); }
+.pictether-section-actions > button { min-height: var(--input-height, 30px); padding-inline: 12px; font-size: var(--font-ui-small); white-space: nowrap; }
+.pictether-settings-advanced { margin: 0; color: var(--text-muted); font-size: var(--font-ui-small); }
+.pictether-settings-advanced summary { cursor: var(--cursor, pointer); padding: var(--setting-items-padding-y, 12px) var(--setting-items-padding-x, 16px); }
+.pictether-settings-advanced[open] summary { padding-bottom: 4px; }
+.pictether-settings-advanced summary:focus-visible { outline: 2px solid var(--background-modifier-border-focus); outline-offset: -2px; border-radius: var(--radius-s, 4px); }
+.pictether-credentials { margin-top: var(--size-4-6, 24px); }
+.pictether-rk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: var(--size-4-2, 8px); padding-inline: var(--setting-items-padding-x, 16px); font-size: var(--font-ui-small); font-weight: var(--font-medium, 500); }
+.pictether-rk-list { background: var(--setting-items-background, var(--background-primary)); border: var(--setting-items-border-width, 1px) solid var(--setting-items-border-color, var(--background-modifier-border)); border-radius: var(--setting-items-radius, var(--radius-m, 8px)); overflow: hidden; }
+.pictether-rk-empty { display: flex; align-items: center; gap: 12px; padding: 18px var(--setting-items-padding-x, 16px); color: var(--text-muted); font-size: var(--font-ui-small); }
+.pictether-rk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: 16px var(--setting-items-padding-x, 16px); }
 .pictether-rk-row + .pictether-rk-row { border-top: 1px solid var(--background-modifier-border); }
-.pictether-rk-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.pictether-settings button.pictether-icon-button { width: 30px; height: 30px; padding: 6px; border: 0; background: transparent; box-shadow: none; color: var(--text-muted); }
+.pictether-rk-info { display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-width: 0; }
+.pictether-settings button.pictether-icon-button { width: 30px; height: 30px; flex: 0 0 30px; padding: 6px; border: 0; background: transparent; box-shadow: none; color: var(--text-muted); }
 .pictether-settings button.pictether-icon-button:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
 .pictether-settings button.pictether-icon-button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
-.pictether-rk-identity { display: flex; flex-direction: column; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
-.pictether-rk-mask { letter-spacing: 2px; font-size: var(--font-ui-small); color: var(--text-faint); }
-.pictether-rk-status { margin-left: auto; color: var(--text-muted); font-size: var(--font-ui-smaller); white-space: nowrap; }
-.pictether-rk-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.pictether-rk-current { font-size: var(--font-ui-small); color: var(--text-muted); }
-.pictether-subtle-button { color: var(--text-muted); }
+.pictether-settings button.pictether-icon-button:disabled { opacity: 0.4; }
+.pictether-rk-identity { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pictether-rk-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-ui-small); }
+.pictether-rk-mask { display: block; white-space: nowrap; letter-spacing: 2px; font-size: var(--font-ui-smaller); color: var(--text-faint); line-height: 1.2; }
+.pictether-rk-status { color: var(--text-muted); font-size: var(--font-ui-smaller); white-space: nowrap; }
+.pictether-rk-controls { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.pictether-rk-current { font-size: var(--font-ui-smaller); color: var(--text-muted); }
 .pictether-status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex: 0 0 7px; background: var(--text-faint); }
 .pictether-status-dot.is-ok { background: var(--color-green); }
 .pictether-status-dot.is-error { background: var(--color-red); }
-.pictether-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 6px 0 10px; }
-.pictether-stat { display: flex; flex-direction: column; gap: 6px; }
-.pictether-stat-value { font-size: calc(var(--font-ui-large) * 1.7); font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-normal); overflow-wrap: anywhere; }
-.pictether-credential-modal { width: min(520px, 92vw); }
-.pictether-credential-modal .setting-item { flex-wrap: wrap; gap: 10px; }
+.pictether-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: 20px var(--setting-items-padding-x, 16px); }
+.pictether-stat { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.pictether-stat-value { font-size: 30px; font-weight: var(--font-medium, 500); line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--text-normal); overflow-wrap: anywhere; }
+.pictether-stat .pictether-settings-caption { margin: 0; font-size: var(--font-ui-smaller); overflow-wrap: normal; }
+.pictether-credential-modal { width: min(560px, 92vw); }
+.pictether-credential-modal .pictether-settings-caption { margin: 8px 0 16px; }
+.pictether-credential-modal .modal-content,
+.pictether-reset-modal .modal-content,
+.pictether-confirm-modal .modal-content { container-type: inline-size; }
 .pictether-credential-modal .setting-item-control { min-width: 0; }
-.pictether-credential-modal input { max-width: 100%; }
+.pictether-credential-modal input { width: clamp(160px, 45cqw, 300px); max-width: 100%; }
 .pictether-credential-feedback { display: flex; align-items: baseline; gap: 9px; margin: 18px 0; font-size: var(--font-ui-small); color: var(--text-muted); overflow-wrap: anywhere; }
-.pictether-dialog-actions { border: 0; padding-top: 20px; }
-.pictether-reset-ack { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; }
+.setting-item.pictether-dialog-actions { flex-direction: row; border: 0; padding-top: 20px; background: transparent; }
+.pictether-dialog-actions > .setting-item-info { display: none; }
+.pictether-dialog-actions .setting-item-control { flex: 1; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.pictether-credential-modal .setting-item.pictether-dialog-actions .setting-item-control,
+.pictether-reset-modal .setting-item.pictether-dialog-actions .setting-item-control,
+.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control { justify-content: flex-end; }
+.pictether-credential-modal .setting-item.pictether-dialog-actions .setting-item-control > button,
+.pictether-reset-modal .setting-item.pictether-dialog-actions .setting-item-control > button,
+.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control > button { width: auto; max-width: 100%; }
+.pictether-confirm-modal { width: min(520px, 92vw); }
+.pictether-reset-ack { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; font-size: var(--font-ui-small); line-height: var(--line-height-normal, 1.5); }
 .pictether-reset-ack input { flex: 0 0 auto; margin-top: 3px; }
 .pictether-reset-modal { width: min(580px, 92vw); }
 .pictether-reset-summary { white-space: pre-line; overflow-wrap: anywhere; }
-@media (max-width: 520px) {
-  .pictether-rk-row { gap: 10px; padding: 12px; }
-  .pictether-rk-status { white-space: normal; }
-  .pictether-rk-controls { gap: 8px; }
-  .pictether-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .pictether-settings .setting-item { flex-wrap: wrap; gap: 10px; }
-  .pictether-settings .setting-item-control input[type="text"] { width: 100%; }
-}
 
+/* Quiet feedback without changing geometry. Theme colors remain host-owned. */
+:is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) {
+  --pictether-motion-duration: 140ms;
+}
+:is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button {
+  transition: background-color var(--pictether-motion-duration) ease,
+    color var(--pictether-motion-duration) ease,
+    box-shadow var(--pictether-motion-duration) ease,
+    transform var(--pictether-motion-duration) ease;
+}
+:is(.pictether-settings, .pictether-credential-modal) input {
+  transition: border-color var(--pictether-motion-duration) ease,
+    box-shadow var(--pictether-motion-duration) ease;
+}
+.pictether-rk-row,
+.pictether-settings-advanced summary {
+  transition: background-color var(--pictether-motion-duration) ease,
+    color var(--pictether-motion-duration) ease;
+}
+.pictether-rk-row:focus-within { background-color: var(--background-modifier-hover); }
+@media (hover: hover) and (pointer: fine) {
+  .pictether-rk-row:hover { background-color: var(--background-modifier-hover); }
+  .pictether-settings-advanced summary:hover { color: var(--text-normal); background-color: var(--background-modifier-hover); }
+  :is(.pictether-settings, .pictether-credential-modal) input:not(:disabled):not(:focus):hover { border-color: var(--background-modifier-border-hover); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button:not(:disabled):hover { transform: translateY(-1px); }
+  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button:not(:disabled):active { transform: translateY(0) scale(0.98); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) { --pictether-motion-duration: 0ms; }
+}
+@container pictether-settings (max-width: 560px) {
+  .pictether-rk-row { gap: 12px; }
+  .pictether-rk-info { grid-template-columns: 7px minmax(0, 1fr); column-gap: 10px; row-gap: 4px; }
+  .pictether-rk-status { grid-column: 2; }
+  .pictether-rk-controls { align-self: start; gap: 8px; }
+  .pictether-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 20px; }
+}
+@container pictether-settings (max-width: 400px) {
+  .pictether-settings-section .setting-item-control input[type="text"] { width: 100%; }
+  .pictether-vault-setting .setting-item-info { flex: 1; margin-inline-end: 12px; }
+  .pictether-vault-setting .setting-item-control { width: auto; align-self: center; }
+}

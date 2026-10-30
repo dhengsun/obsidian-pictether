@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import { editorLivePreviewField, MarkdownRenderChild, Plugin } from 'obsidian';
 import { syntaxTree } from '@codemirror/language';
 import { Decoration, DecorationSet, EditorView, ViewPlugin, ViewUpdate, WidgetType } from '@codemirror/view';
@@ -49,7 +50,7 @@ export function registerRendering(plugin: Plugin, resources: ImageResources): vo
       const wrapper = image.ownerDocument.createElement('span');
       image.replaceWith(wrapper);
       const width = image.getAttribute('width');
-      const description=image.getAttribute('alt')??'Attachment';
+      const description=image.getAttribute('alt')??t("Attachment");
       const alt = width && !description.includes('|') ? `${description}|${width}` : description;
       context.addChild(new ReadingImage(wrapper, uri, alt, resources));
     }

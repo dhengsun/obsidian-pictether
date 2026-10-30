@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { randomBytes } from 'node:crypto';
 
 export interface AssetReference { namespace: string; date: string; filename: string; key: string }
@@ -40,7 +41,7 @@ export function newReference(namespace: string, extension: string, now = new Dat
 }
 
 /** Text attachments are files, rather than image embeds; escape labels as literal Markdown. */
-export function attachmentMarkdown(key: string, label = 'Attachment'): string {
+export function attachmentMarkdown(key: string, label = t("Attachment")): string {
   const uri = referenceFromKey(key);
   const text = label.replace(/[\r\n]/g, ' ').replace(/[\\[\]]/g, '\\$&');
   return `${/\.md$/.test(key) ? '' : '!'}[${text}](${uri})`;

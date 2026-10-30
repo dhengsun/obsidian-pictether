@@ -1,52 +1,57 @@
 # Pictether
 
-Obsidian Desktop 的本地优先外部附件插件。附件保存在 Vault 外，通过 `mdasset://` 引用；S3 兼容对象存储用于可选备份和缺失恢复。
+![Language support](https://img.shields.io/badge/Language-English%20%7C%20Chinese-blue)
 
-## 功能
+**English** · [简体中文](README.zh-CN.md)
 
-- 粘贴、拖入或选择图片、视频和 PDF。
-- 阅读视图与实时预览、图片预览、视频播放、PDF 翻页及系统打开。
-- OSS 自动备份、校验、重试和缺失附件恢复。
-- 凭据管理、连接测试、每日备份汇总。
-- 笔记与附件导出为普通 Markdown 和相对链接。
+**Keep your vault clean. Keep your attachments organized.**
 
-图片支持 PNG、JPEG、WebP、GIF、BMP、AVIF、SVG；视频支持 MKV、MOV、MP4、OGV、WebM，实际播放取决于编码。JSON、Markdown 的新导入交给 Obsidian；不支持音频、HEIC、TIFF。旧受管 Markdown 保留兼容读取，JSON 引用不再渲染或恢复。
+Pictether is a simple, local-first external attachment manager for Obsidian Desktop. Paste, drag, and manage images, videos, and PDFs naturally, while keeping them neatly organized outside your vault.
 
-## 构建与安装
+## Why Pictether?
 
-开发需要 Node.js 24+ 和 npm，生成 ZIP 另外需要 Python 3。
+- **Simple by design.** Set an attachment directory and start using it. No complicated setup or workflows.
+- **Organized by time.** Attachments follow a predictable `vault/day/HHmmss-UUID` structure, making files easier to browse, locate, and manage.
+- **A cleaner vault.** Keep bulky media files outside your notes without sacrificing the familiar Obsidian editing experience.
+- **Backup when you need it.** Optionally back up attachments to S3-compatible storage and recover missing local files.
+- **Easy to take elsewhere.** Export notes as standard Markdown with relative attachment links.
 
-```sh
-npm ci
-npm run typecheck
-npm run build
-```
+*Your notes stay in Obsidian. Your attachments stay organized.*
 
-将 `main.js`、`manifest.json`、`styles.css` 放到 Vault 的 `.obsidian/plugins/pictether/`，同时保留 `LICENSE`、`THIRD_PARTY_NOTICES.md`，然后在 Obsidian 中启用插件。
+## Usage
 
-需要本地安装 ZIP 时可运行 `npm run package`；构建文件和安装包均不提交源码仓库。测试、工程约定和开发文档只留本地，不随公开源码分发；`npm run test:local` 仅供具有本地测试文件的维护者使用。
+1. **Choose an attachment directory.** Set the attachment root in the plugin settings. The default is `Pictures/markdown-assets` under your home directory. The vault name is read from Obsidian automatically.
+2. **Insert attachments.** Paste or drag images, videos, and PDFs into a note, or run **Insert Attachment**. View them in Reading View or Live Preview.
+3. **Connect object storage.** Enter your S3 endpoint and bucket. Click the plus icon beside **Access credentials**, enter your Access Key ID and Secret Access Key, test the connection, and save. For Cloudflare R2, use `auto` as the signing region. A Token value is not required.
+4. **Enable automatic backup.** Existing and new attachments are backed up automatically. Use an entry's three-dot menu to edit or delete credentials. Gray means not tested, red means the connection test failed, and green means it passed. The daily overview shows backup attempts, successes, conflicts, and failures.
+5. **Restore missing attachments.** Missing local files can be recovered from cloud storage. You can also use **Restore missing attachments** in settings or run **Restore Missing Attachments**. Conflicting content is never overwritten automatically.
+6. **Export a note.** Run **Export Note with Attachments** to create ordinary Markdown with relative attachment links for other tools.
 
-仅支持桌面，声明的最低 Obsidian API 版本为 1.11.4；备份数据库还要求实际宿主内置 `node:sqlite`。不同平台、视频编码和 S3 服务需分别验证，当前为开发预览版本。
+## Compatibility
 
-## 使用
+Pictether currently supports **Obsidian Desktop only**.
 
-1. 设置附件根目录，默认是当前用户的 `Pictures/markdown-assets`。仓库名自动读取 Obsidian，已有附件路径保持稳定。
-2. 在 Markdown 笔记中粘贴、拖入附件，或执行 `Insert Attachment`。
-3. 需要云端备份时，填写 S3 Endpoint、Bucket，在加号入口添加 Access Key ID 和 Secret Access Key，测试并保存，再开启自动备份。R2 的签名区域为 `auto`，无需填写 Token value。
-4. 缺失附件可自动恢复，也可执行 `Restore Missing Attachments`；导出使用 `Export Note with Attachments`。
+The interface follows Obsidian's language setting: Chinese locales use Simplified Chinese; English and other locales use English. No separate plugin language setting is needed. After changing Obsidian's language, follow its reload prompt.
 
-RK 列表的三个点菜单提供编辑和删除；凭据不回显，设置只保存 SecretStorage 引用。绿点表示相应配置曾通过连接测试，不代表已验证写入权限。多设备可使用同一命名空间，本地和云端内容冲突不会自动覆盖。
+**Supported formats:**
+- **Images:** PNG, JPEG, WebP, GIF, BMP, AVIF, and SVG.
+- **Videos:** MKV, MOV, MP4, OGV, and WebM. Playback depends on the codec.
+- **Documents:** PDF.
 
-附件布局：
+New JSON and Markdown imports remain with Obsidian. Audio, HEIC, and TIFF are not supported.
 
-```text
-{root}/{namespace}/{YYYY-MM-DD}/{HHmmss-xxxxxx}.{ext}
-```
+## Important Notes
 
-正常操作不删除附件或向云端传播删除。**重置会删除当前附件根目录下所有命名空间的受管理本地附件，包含共用目录的其他库；未备份文件无法恢复。** 操作前必须核对范围并勾选确认。笔记、云端和无法识别的本地文件保留，部分失败可继续重置。重置后重新配置 OSS 可恢复已备份附件。
+Attachments use `mdasset://` references and require Pictether for display in the original notes. Use the export feature when sharing with other Markdown tools.
 
-自定义 `mdasset://` 引用依赖本插件。需要给其他 Markdown 工具使用时，请导出笔记与附件。SQLite 数据库不支持跨设备实时双向同步；备份数据库前应停用插件并等待连接关闭。
+Cloud storage is optional for local use. A successful connection test does not verify upload permissions.
 
-## 许可
+### Reset Warning
 
-[MIT License](LICENSE)，Copyright © 2026 Erix。第三方组件保留其各自许可，见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)；使用 `npm run licenses` 更新声明。
+**Reset deletes managed local attachments in every namespace under the current attachment root, including attachments used by other vaults sharing that directory. Unbacked files cannot be recovered.**
+
+Review the directory and file counts before confirming. Notes and cloud objects are preserved. Reconfigure object storage afterward to restore backed-up attachments.
+
+---
+
+Author: [dhengsun](https://github.com/dhengsun) · [MIT License](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)

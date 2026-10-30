@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { GetObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { createHash } from 'node:crypto';
 import { Readable } from 'node:stream';
@@ -21,16 +22,16 @@ export class CloudConfigurationError extends Error {}
 export class CloudAttachmentMissing extends Error {}
 export class CloudConnectionError extends Error {}
 export function validateR2SecretReferences(accessKeySecret:string,secretKeySecret:string):void {
-  if(accessKeySecret&&accessKeySecret===secretKeySecret)throw new CloudConfigurationError('Access Key ID 和 Secret Access Key 指向同一个凭据条目。请在设置中重新填写两项并点击“保存凭据”，然后重新加载插件。');
+  if(accessKeySecret&&accessKeySecret===secretKeySecret)throw new CloudConfigurationError(t("Access Key ID 和 Secret Access Key 指向同一个凭据条目。请在设置中重新填写两项并点击“保存凭据”，然后重新加载插件。"));
 }
 export function validateR2Endpoint(endpoint:string):URL {
   let url:URL;
-  try{url=new URL(endpoint);}catch{throw new CloudConfigurationError('OSS Endpoint 必须是有效的 HTTPS S3 API 地址。');}
-  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw new CloudConfigurationError('OSS Endpoint 必须是 HTTPS 地址，不能包含凭据、路径或查询参数。');
+  try{url=new URL(endpoint);}catch{throw new CloudConfigurationError(t("OSS Endpoint 必须是有效的 HTTPS S3 API 地址。"));}
+  if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash||url.pathname!=='/')throw new CloudConfigurationError(t("OSS Endpoint 必须是 HTTPS 地址，不能包含凭据、路径或查询参数。"));
   return url;
 }
 export function validateR2Bucket(bucket:string):void {
-  if(!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/.test(bucket))throw new CloudConfigurationError('OSS Bucket 名称无效，请填写 Bucket 名称而非 URL。');
+  if(!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/.test(bucket))throw new CloudConfigurationError(t("OSS Bucket 名称无效，请填写 Bucket 名称而非 URL。"));
 }
 // Exact allowlists: even syntactically valid arbitrary names/codes may contain secrets.
 const CLOUD_ERROR_NAMES=new Set(['Error','TypeError','ReferenceError','SyntaxError','RangeError','AggregateError','CredentialsProviderError','TokenProviderError','S3ServiceException','ServiceException','NoSuchBucket','NoSuchKey','NotFound','InvalidAccessKeyId','SignatureDoesNotMatch','AccessDenied','InvalidArgument','InvalidRequest','PermanentRedirect','IncorrectEndpoint','AuthorizationHeaderMalformed','RequestTimeTooSkewed','RequestExpired','ExpiredToken','InvalidToken','TimeoutError','AbortError','NetworkingError','UnknownEndpoint']);
@@ -58,20 +59,20 @@ function cloudErrorFacts(error:unknown):{name:string;code:string;status?:number;
 /** Only controlled text may reach notices or persisted backup errors. */
 export function cloudFailureMessage(error:unknown):string {
   if(error instanceof CloudConfigurationError || error instanceof LocalResetError)return error.message;
-  if(error instanceof CloudAttachmentMissing)return '云端未找到该附件，笔记引用已保留。';
-  if(error instanceof BackupConflict)return '附件内容或校验信息不一致，已停止处理并保留原文件。';
+  if(error instanceof CloudAttachmentMissing)return t("云端未找到该附件，笔记引用已保留。");
+  if(error instanceof BackupConflict)return t("附件内容或校验信息不一致，已停止处理并保留原文件。");
   const {name,code,status,html}=cloudErrorFacts(error);
-  let message='云端操作失败，请检查本地权限、网络和 OSS 配置后重试。';
-  if(name==='NoSuchBucket')message='OSS Bucket 不存在，请检查 Endpoint 和 Bucket 名称。';
-  else if(name==='InvalidArgument')message='OSS 拒绝了请求参数，请检查两项 S3 凭据是否分别对应 Access Key ID 和 Secret Access Key，以及 Endpoint 是否为目标账户的 S3 API 地址。';
-  else if(name==='RequestTimeTooSkewed'||name==='RequestExpired')message='OSS 请求时间校验失败，请检查系统时间后重试。';
-  else if(code==='INVALID_CREDENTIAL_OBJECT'||name==='CredentialsProviderError'||name==='TokenProviderError')message='OSS 凭据未能被 SDK 正确读取，请重新选择两项凭据并重新加载插件。';
-  else if(name==='InvalidAccessKeyId'||name==='SignatureDoesNotMatch'||name==='AccessDenied'||name==='ExpiredToken'||name==='InvalidToken'||status===401||status===403)message='OSS 凭据无效或权限不足，请检查 AK、Secret Key 和目标 Bucket 的读写权限。';
-  else if(html||name==='PermanentRedirect'||name==='IncorrectEndpoint'||name==='AuthorizationHeaderMalformed')message='OSS 返回了非预期响应，请核对 S3 API Endpoint 和代理配置。';
-  else if(name==='TimeoutError'||name==='AbortError'||name==='NetworkingError'||name==='UnknownEndpoint'||['ENOTFOUND','EAI_AGAIN','ECONNREFUSED','ECONNRESET','ETIMEDOUT','ENETUNREACH','EHOSTUNREACH'].includes(code))message='无法连接 OSS，请检查网络、Endpoint 或代理设置后重试。';
-  else if(['ERR_TLS_CERT_ALTNAME_INVALID','CERT_HAS_EXPIRED','DEPTH_ZERO_SELF_SIGNED_CERT','UNABLE_TO_VERIFY_LEAF_SIGNATURE','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_GET_ISSUER_CERT_LOCALLY'].includes(code))message='OSS TLS 证书验证失败，请检查 Endpoint、系统时间或代理证书。';
-  else if(status!==undefined&&status>=500)message='OSS 服务暂时不可用，请稍后重试。';
-  const stage=error instanceof CloudConnectionError?'OSS 连接检查失败：':'';
+  let message=t("云端操作失败，请检查本地权限、网络和 OSS 配置后重试。");
+  if(name==='NoSuchBucket')message=t("OSS Bucket 不存在，请检查 Endpoint 和 Bucket 名称。");
+  else if(name==='InvalidArgument')message=t("OSS 拒绝了请求参数，请检查两项 S3 凭据是否分别对应 Access Key ID 和 Secret Access Key，以及 Endpoint 是否为目标账户的 S3 API 地址。");
+  else if(name==='RequestTimeTooSkewed'||name==='RequestExpired')message=t("OSS 请求时间校验失败，请检查系统时间后重试。");
+  else if(code==='INVALID_CREDENTIAL_OBJECT'||name==='CredentialsProviderError'||name==='TokenProviderError')message=t("OSS 凭据未能被 SDK 正确读取，请重新选择两项凭据并重新加载插件。");
+  else if(name==='InvalidAccessKeyId'||name==='SignatureDoesNotMatch'||name==='AccessDenied'||name==='ExpiredToken'||name==='InvalidToken'||status===401||status===403)message=t("OSS 凭据无效或权限不足，请检查 AK、Secret Key 和目标 Bucket 的读写权限。");
+  else if(html||name==='PermanentRedirect'||name==='IncorrectEndpoint'||name==='AuthorizationHeaderMalformed')message=t("OSS 返回了非预期响应，请核对 S3 API Endpoint 和代理配置。");
+  else if(name==='TimeoutError'||name==='AbortError'||name==='NetworkingError'||name==='UnknownEndpoint'||['ENOTFOUND','EAI_AGAIN','ECONNREFUSED','ECONNRESET','ETIMEDOUT','ENETUNREACH','EHOSTUNREACH'].includes(code))message=t("无法连接 OSS，请检查网络、Endpoint 或代理设置后重试。");
+  else if(['ERR_TLS_CERT_ALTNAME_INVALID','CERT_HAS_EXPIRED','DEPTH_ZERO_SELF_SIGNED_CERT','UNABLE_TO_VERIFY_LEAF_SIGNATURE','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_GET_ISSUER_CERT_LOCALLY'].includes(code))message=t("OSS TLS 证书验证失败，请检查 Endpoint、系统时间或代理证书。");
+  else if(status!==undefined&&status>=500)message=t("OSS 服务暂时不可用，请稍后重试。");
+  const stage=error instanceof CloudConnectionError?t("OSS 连接检查失败："):'';
   return `${stage}${message} [SDK=${name}; HTTP=${status??'NONE'}; Code=${code}${html?'; Response=HTML':''}]`;
 }
 export async function remoteSource(cloud:CloudBackup,key:string):Promise<RemoteSource|null> {

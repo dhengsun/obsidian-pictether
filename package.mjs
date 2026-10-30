@@ -9,7 +9,7 @@ execFileSync(process.execPath,['licenses.mjs'],{stdio:'inherit'});
 // Python's standard library produces a deterministic file list, without package dependencies or shell interpolation.
 execFileSync('python3', ['-c', `import zipfile, sys
 with zipfile.ZipFile(sys.argv[1], 'w', compression=zipfile.ZIP_DEFLATED) as output:
-    for name in ['main.js', 'manifest.json', 'styles.css', 'README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md']:
+    for name in ['main.js', 'manifest.json', 'styles.css', 'README.md', 'README.zh-CN.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md']:
         output.write(name, 'pictether/' + name)
 `, `pictether-${version}.zip`], { stdio: 'inherit' });
 console.log(`Created pictether-${version}.zip`);

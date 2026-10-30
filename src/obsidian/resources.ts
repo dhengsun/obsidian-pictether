@@ -1,3 +1,4 @@
+import { t } from '../core/i18n';
 import { identifyAsset, AssetFormat } from '../core/assets';
 import { parseReference } from '../core/references';
 export interface AssetResource { url:string; format:AssetFormat; open?():Promise<void>; dispose?():void }
@@ -30,7 +31,7 @@ export class AssetResources {
   }
   async open(uri:string):Promise<void>{
     const lease=this.acquire(uri);
-    try{const asset=await lease.asset;if(!asset.open)throw new Error('System opening is unavailable. Reload Pictether.');await asset.open();}
+    try{const asset=await lease.asset;if(!asset.open)throw new Error(t("System opening is unavailable. Reload Pictether."));await asset.open();}
     finally{lease.release();}
   }
   dispose():void{for(const entry of this.cache.values())void entry.promise.then(asset=>asset.dispose?.(),()=>{});this.cache.clear();}

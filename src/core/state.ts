@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import path from 'node:path';
 import os from 'node:os';
 import { validateRecordKey } from './references';
@@ -55,7 +56,7 @@ export function settingsState(raw: unknown): SettingsState {
   const settings = { ...DEFAULT_SETTINGS, ...value.settings };
   validateSettings(settings);
   if(!Object.prototype.hasOwnProperty.call(value.settings,'credentials')&&settings.accessKeySecret&&settings.secretKeySecret){
-    settings.credentials=[{id:'legacy-default',name:'默认凭据',accessKeySecret:settings.accessKeySecret,secretKeySecret:settings.secretKeySecret}];
+    settings.credentials=[{id:'legacy-default',name:t("默认凭据"),accessKeySecret:settings.accessKeySecret,secretKeySecret:settings.secretKeySecret}];
     settings.activeCredential='legacy-default';
   }
   if(settings.credentials.length)selectCredential(settings,settings.activeCredential);

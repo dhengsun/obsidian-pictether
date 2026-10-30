@@ -1,4 +1,5 @@
-import { FileSystemAdapter, MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian';
+import { setLanguageProvider, t } from './core/i18n';
+import { FileSystemAdapter, getLanguage, MarkdownView, Modal, Notice, Plugin, Setting } from 'obsidian';
 import path from 'node:path';
 import { AssetStorage, blobSource } from './core/storage';
 import { attachmentMarkdown, defaultNamespace, parseReference, referenceFromKey } from './core/references';
@@ -36,8 +37,9 @@ export default class PictetherPlugin extends Plugin {
   private pluginDirectory='';
   private vaultDirectory='';
   async onload(): Promise<void> {
+    setLanguageProvider(getLanguage);
     const adapter = this.app.vault.adapter;
-    if (!(adapter instanceof FileSystemAdapter)) throw new Error('Pictether requires a desktop filesystem vault.');
+    if (!(adapter instanceof FileSystemAdapter)) throw new Error(t("Pictether requires a desktop filesystem vault."));
     this.vaultDirectory=adapter.getBasePath();
     const raw = await this.loadData();
     const settings = settingsState(raw);
@@ -47,7 +49,7 @@ export default class PictetherPlugin extends Plugin {
       this.jobs = await SqliteJobStore.open(path.join(directory,'pictether.sqlite'),path.join(directory,'data.json'),raw?.version);
     } catch (error) {
       const detail = error instanceof Error && /^SQLite/.test(error.message) ? error.message : 'SQLite startup failed.';
-      new Notice(`Pictether: ${detail} Node ${process.versions.node}; Electron ${process.versions.electron ?? 'none'}. Local attachments and original records are preserved.`,20000);
+      new Notice(t("Pictether: {0} Node {1}; Electron {2}. Local attachments and original records are preserved.", detail, process.versions.node, process.versions.electron ?? 'none'),20000);
     }
     this.state = new StateStore(settings, state => {
       if (!this.jobs) return Promise.reject(new Error('SQLite unavailable. Original settings/records are preserved; fix database support before saving settings.'));
@@ -57,7 +59,7 @@ export default class PictetherPlugin extends Plugin {
       try {
         if (!settings.settings.namespace) await this.state.update(state => { state.settings.namespace = defaultNamespace(this.app.vault.getName()); });
         else if (raw?.version !== 2||!Array.isArray(raw?.settings?.credentials)) await this.state.update(() => {});
-      } catch { new Notice('Pictether: SQLite records are safe, but settings could not be saved. Original JSON was preserved; retry after fixing disk permissions.',15000); }
+      } catch { new Notice(t("Pictether: SQLite records are safe, but settings could not be saved. Original JSON was preserved; retry after fixing disk permissions."),15000); }
     }
     this.config = { ...DEFAULT_SETTINGS, ...this.state.snapshot().settings };
     if (!this.config.namespace) this.config.namespace = defaultNamespace(this.app.vault.getName());
@@ -111,14 +113,14 @@ export default class PictetherPlugin extends Plugin {
       event.preventDefault();
       this.startImport(files, insertion);
     }));
-    this.addCommand({ id: 'insert-attachment', name: 'Insert Attachment', editorCallback: (editor, view) => {
+    this.addCommand({ id: 'insert-attachment', name: t("Insert Attachment"), editorCallback: (editor, view) => {
       try {
         const insertion = this.anchors.capture(editor);
         selectImages(view instanceof MarkdownView ? view.containerEl.ownerDocument : document, files => this.startImport(files, insertion), () => insertion.cancel());
-      } catch { new Notice('Pictether: Open a Markdown editor to insert attachments.'); }
+      } catch { new Notice(t("Pictether: Open a Markdown editor to insert attachments.")); }
     } });
-    this.addCommand({ id: 'restore-missing-attachments', name: 'Restore Missing Attachments', callback: () => this.background(() => this.restoreMissing()) });
-    this.addCommand({ id: 'export-note-with-attachments', name: 'Export Note with Attachments', checkCallback: checking => {
+    this.addCommand({ id: 'restore-missing-attachments', name: t("Restore Missing Attachments"), callback: () => this.background(() => this.restoreMissing()) });
+    this.addCommand({ id: 'export-note-with-attachments', name: t("Export Note with Attachments"), checkCallback: checking => {
       const view = this.app.workspace.getActiveViewOfType(MarkdownView);
       if (!view?.file) return false;
       if (!checking) {
@@ -136,11 +138,11 @@ export default class PictetherPlugin extends Plugin {
     try {
       validateR2SecretReferences(s.accessKeySecret,s.secretKeySecret);
       const access = this.app.secretStorage?.getSecret(s.accessKeySecret), secret = this.app.secretStorage?.getSecret(s.secretKeySecret);
-      if (!access || !secret) { new Notice('Pictether: OSS 凭据不可用，请编辑 RK 重新填写。'); return; }
+      if (!access || !secret) { new Notice(t("Pictether: OSS 凭据不可用，请编辑 RK 重新填写。")); return; }
       this.cloud = new R2Backup(s.endpoint, s.bucket, access, secret,s.region);
       this.queue = new BackupQueue(this.jobs, this.cloud, undefined, s.assetsRoot);
       this.recovery = new AssetRecovery(this.storage, this.cloud, async key => (await this.jobs!.get(s.assetsRoot,key))?.sha256);
-    } catch(error) { new Notice(`Pictether: OSS 初始化失败：${cloudFailureMessage(error)}`,15000); }
+    } catch(error) { new Notice(t("Pictether: OSS 初始化失败：{0}", cloudFailureMessage(error)),15000); }
   }
   private async quiesce():Promise<void>{
     const results=await Promise.allSettled([this.queue?.stop(),this.recovery?.stop(),this.autoTask,this.credentials.idle(),...this.importTasks,...this.cloudTasks]);
@@ -154,7 +156,7 @@ export default class PictetherPlugin extends Plugin {
   }
   private mutateConnection(work:()=>Promise<void>):Promise<void>{
     const task=this.mutationTail.then(async()=>{
-      if(this.disposed)throw new CloudConfigurationError('插件已停用。');
+      if(this.disposed)throw new CloudConfigurationError(t("插件已停用。"));
       this.changing=true;this.credentials.pause();
       try{await this.quiesce();await work();}
       finally{
@@ -166,10 +168,10 @@ export default class PictetherPlugin extends Plugin {
     return task.then(()=>{this.background(()=>this.autoSync());});
   }
   private applySettings():Promise<void>{return this.mutateConnection(async()=>{
-    if(this.state.snapshot().settings.resetPending)throw new CloudConfigurationError('请先完成重置。');
+    if(this.state.snapshot().settings.resetPending)throw new CloudConfigurationError(t("请先完成重置。"));
   });}
   private updateSettings(change:(settings:Settings)=>void):Promise<void>{
-    if(this.changing||this.state.snapshot().settings.resetPending)return Promise.reject(new CloudConfigurationError('配置正在切换或重置，请稍后重试。'));
+    if(this.changing||this.state.snapshot().settings.resetPending)return Promise.reject(new CloudConfigurationError(t("配置正在切换或重置，请稍后重试。")));
     return this.mutateConnection(async()=>{
       const proposed=this.state.snapshot().settings;change(proposed);
       await this.state.update(next=>{next.settings=proposed;});
@@ -177,12 +179,12 @@ export default class PictetherPlugin extends Plugin {
   }
   private async reviewReset():Promise<LocalResetPlan>{
     try{return await scanLocalReset(this.state.snapshot().settings.assetsRoot,[this.vaultDirectory,this.pluginDirectory]);}
-    catch(error){if(error instanceof LocalResetError)throw error;throw new LocalResetError('无法读取本地附件清理范围，请检查目录权限后重试。');}
+    catch(error){if(error instanceof LocalResetError)throw error;throw new LocalResetError(t("无法读取本地附件清理范围，请检查目录权限后重试。"));}
   }
   private resetPlugin(review:LocalResetPlan):Promise<void>{return this.mutateConnection(async()=>{
-    if(!this.jobs)throw new CloudConfigurationError('数据库不可用，重置未开始。');
+    if(!this.jobs)throw new CloudConfigurationError(t("数据库不可用，重置未开始。"));
     const current=await this.reviewReset();
-    if(current.fingerprint!==review?.fingerprint)throw new LocalResetError('本地附件范围已变化，请重新打开重置确认框。');
+    if(current.fingerprint!==review?.fingerprint)throw new LocalResetError(t("本地附件范围已变化，请重新打开重置确认框。"));
     try{
       await this.state.update(next=>{next.settings.resetPending=true;next.settings.autoBackup=false;});
       const remaining=await clearLocalAttachments(current,[this.vaultDirectory,this.pluginDirectory]);
@@ -191,8 +193,8 @@ export default class PictetherPlugin extends Plugin {
       await this.credentials.eraseManaged();
       await clearStateBackups(this.pluginDirectory);
       await this.state.update(next=>{next.settings=structuredClone(DEFAULT_SETTINGS);next.settings.namespace=defaultNamespace(this.app.vault.getName());});
-    }catch(error){if(error instanceof LocalResetError)throw error;throw new CloudConfigurationError('重置未完成，部分本地附件可能已删除。笔记和云端已保留，请检查本地权限与 SecretStorage 后点击“继续重置”。');}
-    new Notice(`Pictether 已重置，本地受管理附件已删除，笔记和云端已保留。${current.unknown?'目录中另有未识别项目，已保留，请人工检查。':''}`);
+    }catch(error){if(error instanceof LocalResetError)throw error;throw new CloudConfigurationError(t("重置未完成，部分本地附件可能已删除。笔记和云端已保留，请检查本地权限与 SecretStorage 后点击“继续重置”。"));}
+    new Notice(t("Pictether 已重置，本地受管理附件已删除，笔记和云端已保留。{0}", current.unknown?t("目录中另有未识别项目，已保留，请人工检查。"):''));
   });}
   private autoSync():Promise<void>{
     if(this.autoTask)return this.autoTask;
@@ -211,7 +213,7 @@ export default class PictetherPlugin extends Plugin {
     return this.autoTask;
   }
   private startImport(files: File[], insertion: Insertion): void {
-    if (this.disposed||this.changing||this.state.snapshot().settings.resetPending) { insertion.cancel();new Notice('Pictether: 配置正在切换或重置，请稍后导入。'); return; }
+    if (this.disposed||this.changing||this.state.snapshot().settings.resetPending) { insertion.cancel();new Notice(t("Pictether: 配置正在切换或重置，请稍后导入。")); return; }
     const task = this.importAttachments(files, insertion);
     this.importTasks.add(task);
     void task.then(() => this.importTasks.delete(task),()=>this.importTasks.delete(task));
@@ -224,32 +226,32 @@ export default class PictetherPlugin extends Plugin {
         try {
           const ref = await this.storage.importSource(this.config.namespace,blobSource(file),file.name,async(candidate,asset)=>{
             try{return await BackupQueue.enqueueHash(this.requireRecords(),this.config.assetsRoot,candidate.key,asset.sha256,true);}
-            catch{new Notice('Pictether: 附件已保留在本地，但备份记录无法保存。修复存储后自动备份会重新发现。');}
+            catch{new Notice(t("Pictether: 附件已保留在本地，但备份记录无法保存。修复存储后自动备份会重新发现。"));}
           });
-          references.push(attachmentMarkdown(ref.key, 'Attachment'));
-        } catch (error) { new Notice(`Pictether: Attachment import failed. ${error instanceof Error ? error.message : 'Check attachment content and directory permissions.'}`, 10_000); }
+          references.push(attachmentMarkdown(ref.key, t("Attachment")));
+        } catch (error) { new Notice(t("Pictether: Attachment import failed. {0}", error instanceof Error ? error.message : t("Check attachment content and directory permissions.")), 10_000); }
       }
       if (references.length && !this.disposed) {
         try { insertion.insert(references.join('\n') + '\n'); }
-        catch { new Notice(`Pictether: Attachments saved, but the target editor changed. References:\n${references.join('\n')}`, 0); }
+        catch { new Notice(t("Pictether: Attachments saved, but the target editor changed. References:\n{0}", references.join('\n')), 0); }
       }
     } catch (error) {
-      new Notice(`Pictether: ${error instanceof Error ? error.message : 'Import failed.'}`, 10_000);
+      new Notice(`Pictether: ${error instanceof Error ? error.message : t("Import failed.")}`, 10_000);
     }
     finally { insertion.cancel(); }
     if (!this.disposed && references.length) this.background(() => this.autoSync());
   }
   private requireCloud(): void {
-    if(this.disposed)throw new CloudConfigurationError('插件已停用，请重新加载后操作。');
-    if(this.changing||this.state.snapshot().settings.resetPending)throw new CloudConfigurationError('配置正在切换或重置，请稍后重试。');
+    if(this.disposed)throw new CloudConfigurationError(t("插件已停用，请重新加载后操作。"));
+    if(this.changing||this.state.snapshot().settings.resetPending)throw new CloudConfigurationError(t("配置正在切换或重置，请稍后重试。"));
     const saved=this.state.snapshot().settings;
-    if(JSON.stringify(this.config)!==JSON.stringify(saved))throw new CloudConfigurationError('设置已修改，请重新加载 Pictether 后再执行云端操作。');
+    if(JSON.stringify(this.config)!==JSON.stringify(saved))throw new CloudConfigurationError(t("设置已修改，请重新加载 Pictether 后再执行云端操作。"));
     validateR2SecretReferences(saved.accessKeySecret,saved.secretKeySecret);
-    if(!this.jobs)throw new CloudConfigurationError('SQLite 备份记录不可用，请先修复数据库问题；本地附件仍可使用。');
-    if (!this.cloud || !this.queue) throw new CloudConfigurationError('请配置 OSS 地址、存储桶并启用一组 RK。');
+    if(!this.jobs)throw new CloudConfigurationError(t("SQLite 备份记录不可用，请先修复数据库问题；本地附件仍可使用。"));
+    if (!this.cloud || !this.queue) throw new CloudConfigurationError(t("请配置 OSS 地址、存储桶并启用一组 RK。"));
   }
   private requireRecords(): SqliteJobStore {
-    if (!this.jobs) throw new Error('SQLite backup records unavailable.');
+    if (!this.jobs) throw new Error(t("SQLite backup records unavailable."));
     return this.jobs;
   }
   private restoreMissing():Promise<void>{
@@ -277,18 +279,18 @@ export default class PictetherPlugin extends Plugin {
       try { await this.recovery!.ensureLocal(key, true); restored++; }
       catch { failed++; }
     }
-    new Notice(`Pictether: ${restored} 个附件可用，${failed} 个恢复失败。重新打开笔记可刷新预览。`, 10_000);
+    new Notice(t("Pictether: {0} 个附件可用，{1} 个恢复失败。重新打开笔记可刷新预览。", restored, failed), 10_000);
   }
   private askExportDirectory(markdown: string, name: string): void {
     const plugin = this;
     new class extends Modal {
       onOpen(): void {
-        this.contentEl.createEl('h2', { text: 'Export Note with Attachments' });
+        this.contentEl.createEl('h2', { text: t("Export Note with Attachments") });
         let directory = '';
-        new Setting(this.contentEl).setName('Export parent directory').setDesc('Existing absolute directory. A new unique subdirectory will be created.').addText(text => text.onChange(value => { directory = value; }));
-        new Setting(this.contentEl).addButton(button => button.setButtonText('Export').setCta().onClick(() => {
+        new Setting(this.contentEl).setName(t("Export parent directory")).setDesc(t("Existing absolute directory. A new unique subdirectory will be created.")).addText(text => text.onChange(value => { directory = value; }));
+        new Setting(this.contentEl).addButton(button => button.setButtonText(t("Export")).setCta().onClick(() => {
           button.setDisabled(true);
-          void exportNote(markdown, name, directory, plugin.storage).then(output => { new Notice(`Pictether: Exported to ${output}`, 15_000); this.close(); }, error => { button.setDisabled(false); new Notice(`Pictether: ${error instanceof Error ? error.message : 'Export failed.'}`, 10_000); });
+          void exportNote(markdown, name, directory, plugin.storage).then(output => { new Notice(t("Pictether: Exported to {0}", output), 15_000); this.close(); }, error => { button.setDisabled(false); new Notice(`Pictether: ${error instanceof Error ? error.message : t("Export failed.")}`, 10_000); });
         }));
       }
     }(this.app).open();

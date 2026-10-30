@@ -7,10 +7,9 @@
     "build": "node esbuild.config.mjs",
     "dev": "node esbuild.config.mjs --watch",
     "typecheck": "tsc --noEmit",
-    "pretest": "npm run build",
-    "test": "vitest run",
     "package": "npm run build && node package.mjs",
-    "licenses": "node licenses.mjs"
+    "licenses": "node licenses.mjs",
+    "test:local": "npm run build && vitest run --config vitest.config.ts"
   },
   "devDependencies": {
     "@types/jsdom": "^27.0.0",

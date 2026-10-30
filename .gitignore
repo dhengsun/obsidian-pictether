@@ -22,3 +22,12 @@ data-v1.*.backup.json*
 *.log
 .vscode/
 .idea/
+
+# Local development materials (not part of the public source tree)
+tests/
+**/AGENTS.md
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
+vitest.config.ts
+*.zip

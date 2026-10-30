@@ -11,7 +11,7 @@ Pictether is a simple, local-first external attachment manager for Obsidian Desk
 ## Why Pictether?
 
 - **Simple by design.** Set an attachment directory and start using it. No complicated setup or workflows.
-- **Organized by time.** Attachments follow a predictable `vault/day/HHmmss-UUID` structure, making files easier to browse, locate, and manage.
+- **Organized by time.** Attachments follow a predictable `namespace/YYYY-MM-DD/HHmmss-xxxxxx.ext` (six random hexadecimal digits) structure, making files easier to browse, locate, and manage.
 - **A cleaner vault.** Keep bulky media files outside your notes without sacrificing the familiar Obsidian editing experience.
 - **Backup when you need it.** Optionally back up attachments to S3-compatible storage and recover missing local files.
 - **Easy to take elsewhere.** Export notes as standard Markdown with relative attachment links.
@@ -23,7 +23,7 @@ Pictether is a simple, local-first external attachment manager for Obsidian Desk
 1. **Choose an attachment directory.** Set the attachment root in the plugin settings. The default is `Pictures/markdown-assets` under your home directory. The vault name is read from Obsidian automatically.
 2. **Insert attachments.** Paste or drag images, videos, and PDFs into a note, or run **Insert Attachment**. View them in Reading View or Live Preview.
 3. **Connect object storage.** Enter your S3 endpoint and bucket. Click the plus icon beside **Access credentials**, enter your Access Key ID and Secret Access Key, test the connection, and save. For Cloudflare R2, use `auto` as the signing region. A Token value is not required.
-4. **Enable automatic backup.** Existing and new attachments are backed up automatically. Use an entry's three-dot menu to edit or delete credentials. Gray means not tested, red means the connection test failed, and green means it passed. The daily overview shows backup attempts, successes, conflicts, and failures.
+4. **Enable automatic backup.** Existing and new attachments are backed up automatically. Use an entry's three-dot menu to edit or delete credentials. Gray means not tested, red means the connection test failed, and green means it passed. A small footer shows backup attempts, successes, conflicts, and failures.
 5. **Restore missing attachments.** Missing local files can be recovered from cloud storage. You can also use **Restore missing attachments** in settings or run **Restore Missing Attachments**. Conflicting content is never overwritten automatically.
 6. **Export a note.** Run **Export Note with Attachments** to create ordinary Markdown with relative attachment links for other tools.
 

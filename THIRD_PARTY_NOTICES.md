@@ -35,10 +35,10 @@ Saxes upstream ISC notices: https://github.com/lddubeau/saxes/blob/v6.0.0/LICENS
 | @lezer/lr | 1.4.11 | MIT | [6](#notice-6) |
 | @lezer/markdown | 1.8.1 | MIT | [7](#notice-7) |
 | @marijn/find-cluster-break | 1.0.4 | MIT | [8](#notice-8) |
-| @smithy/core | 3.36.2 | Apache-2.0 | [1](#notice-1) |
+| @smithy/core | 3.38.0 | Apache-2.0 | [1](#notice-1) |
 | @smithy/credential-provider-imds | 4.5.2 | Apache-2.0 | [2](#notice-2) |
 | @smithy/fetch-http-handler | 5.8.0 | Apache-2.0 | [2](#notice-2) |
-| @smithy/node-http-handler | 4.12.1 | Apache-2.0 | [2](#notice-2) |
+| @smithy/node-http-handler | 4.14.0 | Apache-2.0 | [2](#notice-2) |
 | @smithy/signature-v4 | 5.7.4 | Apache-2.0 | [2](#notice-2) |
 | @smithy/types | 4.19.0 | Apache-2.0 | [1](#notice-1) |
 | bowser | 2.14.1 | MIT | [9](#notice-9) |
@@ -51,7 +51,7 @@ Saxes upstream ISC notices: https://github.com/lddubeau/saxes/blob/v6.0.0/LICENS
 
 ## Notice 1
 
-@aws-sdk/checksums@3.1001.5, @aws-sdk/credential-provider-process@3.972.76, @aws-sdk/credential-provider-sso@3.973.20, @aws-sdk/credential-provider-web-identity@3.972.82, @aws-sdk/middleware-sdk-s3@3.972.81, @aws-sdk/signature-v4-multi-region@3.996.49, @smithy/core@3.36.2, @smithy/types@4.19.0
+@aws-sdk/checksums@3.1001.5, @aws-sdk/credential-provider-process@3.972.76, @aws-sdk/credential-provider-sso@3.973.20, @aws-sdk/credential-provider-web-identity@3.972.82, @aws-sdk/middleware-sdk-s3@3.972.81, @aws-sdk/signature-v4-multi-region@3.996.49, @smithy/core@3.38.0, @smithy/types@4.19.0
 
 ```text
 Apache License
@@ -259,7 +259,7 @@ Apache License
 
 ## Notice 2
 
-@aws-sdk/client-s3@3.1156.0, @aws-sdk/credential-provider-env@3.972.76, @aws-sdk/credential-provider-http@3.972.78, @aws-sdk/credential-provider-ini@3.973.21, @aws-sdk/credential-provider-login@3.972.83, @aws-sdk/credential-provider-node@3.972.88, @aws-sdk/nested-clients@3.997.50, @aws-sdk/token-providers@3.1155.0, @aws-sdk/types@3.975.0, @aws-sdk/xml-builder@3.972.41, @smithy/credential-provider-imds@4.5.2, @smithy/fetch-http-handler@5.8.0, @smithy/node-http-handler@4.12.1, @smithy/signature-v4@5.7.4
+@aws-sdk/client-s3@3.1156.0, @aws-sdk/credential-provider-env@3.972.76, @aws-sdk/credential-provider-http@3.972.78, @aws-sdk/credential-provider-ini@3.973.21, @aws-sdk/credential-provider-login@3.972.83, @aws-sdk/credential-provider-node@3.972.88, @aws-sdk/nested-clients@3.997.50, @aws-sdk/token-providers@3.1155.0, @aws-sdk/types@3.975.0, @aws-sdk/xml-builder@3.972.41, @smithy/credential-provider-imds@4.5.2, @smithy/fetch-http-handler@5.8.0, @smithy/node-http-handler@4.14.0, @smithy/signature-v4@5.7.4
 
 ```text
 Apache License

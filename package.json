@@ -1,6 +1,6 @@
 {
   "name": "obsidian-pictether",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Local-first external attachments for Obsidian Desktop",
   "scripts": {
@@ -9,15 +9,23 @@
     "typecheck": "tsc --noEmit",
     "package": "npm run build && node package.mjs",
     "licenses": "node licenses.mjs",
-    "test:local": "npm run build && vitest run --config vitest.config.ts"
+    "test:local": "npm run build && vitest run --config vitest.config.ts",
+    "lint": "eslint src --max-warnings 0",
+    "format:check": "prettier --check \"src/**/*.ts\" \"*.mjs\" styles.css",
+    "format": "prettier --write \"src/**/*.ts\" \"*.mjs\" styles.css"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^24.0.0",
     "esbuild": "^0.28.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-obsidianmd": "^0.4.2",
     "jsdom": "^27.4.0",
     "obsidian": "^1.11.4",
+    "prettier": "^3.9.10",
     "typescript": "^5.9.0",
+    "typescript-eslint": "^8.72.1",
     "vitest": "^5.0.5"
   },
   "dependencies": {
@@ -27,6 +35,8 @@
     "@codemirror/view": "^6.38.0",
     "@lezer/common": "^1.2.0",
     "@lezer/markdown": "^1.4.0",
+    "@smithy/core": "^3.38.0",
+    "@smithy/node-http-handler": "^4.14.0",
     "saxes": "^6.0.0"
   },
   "type": "module",
@@ -41,5 +51,11 @@
     "attachments",
     "s3",
     "cloudflare-r2"
-  ]
+  ],
+  "overrides": {
+    "eslint-plugin-obsidianmd": {
+      "obsidian": "$obsidian",
+      "moment": "^2.31.0"
+    }
+  }
 }

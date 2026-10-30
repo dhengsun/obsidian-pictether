@@ -1,135 +1,570 @@
-.pictether-image { display: inline-block; max-width: 100%; vertical-align: middle; }
-.pictether-image img { display: block; max-width: 100%; height: auto; }
-.pictether-image > span { color: var(--text-muted); font-size: var(--font-smaller); overflow-wrap: anywhere; }
-.pictether-preview { display: block; max-width: 100%; max-height: 80vh; object-fit: contain; margin: auto; }
-.pictether-preview-modal { width: min(1100px, 94vw); max-width: 94vw; }
-.pictether-preview-modal .modal-content { max-height: 85vh; overflow: auto; }
-.pictether-preview-modal .pictether-asset { display: block; }
-.pictether-preview-modal .pictether-asset video { width: 100%; max-height: 80vh; }
-.pictether-preview-modal .pictether-pdf { width: 100%; }
-.pictether-image img[title] { cursor: zoom-in; }
-.pictether-image-status { color: var(--text-muted); font-size: var(--font-smaller); overflow-wrap: anywhere; }
-.pictether-asset { display: inline-block; max-width: 100%; vertical-align: top; }
-.pictether-asset video { display: block; width: min(640px, 65vw); max-width: 100%; height: auto; }
-.pictether-pdf { width: min(700px, 65vw); max-width: 100%; }
-.pictether-pdf-toolbar { display: flex; align-items: center; gap: 0.75em; margin: 0.4em 0; }
-.pictether-pdf-canvas { display: block; max-width: 100%; height: auto; }
-.pictether-asset > a { display: block; font-size: var(--font-smaller); margin: 0.3em 0; }
+.pictether-image {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.pictether-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.pictether-image > span {
+  color: var(--text-muted);
+  font-size: var(--font-smaller);
+  overflow-wrap: anywhere;
+}
+.pictether-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  margin: auto;
+}
+.pictether-preview-modal {
+  width: min(1100px, 94vw);
+  max-width: 94vw;
+}
+.pictether-preview-modal .modal-content {
+  max-height: 85vh;
+  overflow: auto;
+}
+.pictether-preview-modal .pictether-asset {
+  display: block;
+}
+.pictether-preview-modal .pictether-asset video {
+  width: 100%;
+  max-height: 80vh;
+}
+.pictether-preview-modal .pictether-pdf {
+  width: 100%;
+}
+.pictether-image img[title] {
+  cursor: zoom-in;
+}
+.pictether-image-status {
+  color: var(--text-muted);
+  font-size: var(--font-smaller);
+  overflow-wrap: anywhere;
+}
+.pictether-asset {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+.pictether-native-media-proxy {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.pictether-asset video {
+  display: block;
+  width: min(640px, 65vw);
+  max-width: 100%;
+  height: auto;
+}
+.pictether-pdf {
+  width: min(700px, 65vw);
+  max-width: 100%;
+}
+.pictether-pdf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0.4em 0;
+}
+.pictether-pdf-canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.pictether-asset > a {
+  display: block;
+  font-size: var(--font-smaller);
+  margin: 0.3em 0;
+}
 
 /* Text files must have a real line box inside host image widgets. Avoid block
    link margins overflowing the image widget's cached height on adjacent lines. */
-.pictether-file-host { min-height: 1.5em; line-height: var(--line-height-normal, 1.5); }
-.pictether-asset.pictether-file { vertical-align: baseline; line-height: var(--line-height-normal, 1.5); }
-.pictether-asset.pictether-file > a { display: inline; margin: 0; font-size: inherit; white-space: normal; overflow-wrap: anywhere; }
+.pictether-file-host {
+  min-height: 1.5em;
+  line-height: var(--line-height-normal, 1.5);
+}
+.pictether-asset.pictether-file {
+  vertical-align: baseline;
+  line-height: var(--line-height-normal, 1.5);
+}
+.pictether-asset.pictether-file > a {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 
 /* Let Obsidian size and center its own settings pane. These rules only lay
    out our controls inside that content box; never cap the host container. */
-.pictether-settings { container-type: inline-size; container-name: pictether-settings; }
-.pictether-settings-section { min-width: 0; margin-bottom: var(--size-4-6, 24px); }
-.pictether-settings-section:last-child { margin-bottom: 0; }
-.pictether-settings .setting-item-control { min-width: 0; }
-.pictether-settings .setting-item-control input[type="text"] { width: clamp(180px, 40cqw, 380px); max-width: 100%; }
-.pictether-settings .pictether-vault-setting { flex-direction: row; align-items: center; }
-.pictether-settings .pictether-vault-setting .setting-item-control { flex: 0 1 55%; justify-content: flex-end; }
-.pictether-settings .pictether-button-setting { flex-direction: row; align-items: center; column-gap: 20px; }
-.pictether-settings .pictether-button-setting .setting-item-control { width: auto; flex: 0 0 auto; }
-.pictether-settings .pictether-button-setting .setting-item-control > button { width: auto; white-space: nowrap; }
-.pictether-readonly-value { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: var(--font-ui-small); user-select: text; }
-.pictether-settings-caption { margin: var(--size-4-3, 12px) var(--setting-items-padding-x, 16px) 0; color: var(--text-muted); font-size: var(--font-ui-smaller); line-height: var(--line-height-normal, 1.5); }
-.pictether-section-actions { display: flex; justify-content: flex-end; gap: var(--size-4-2, 8px); margin-top: var(--size-4-2, 8px); }
-.pictether-section-actions > button { min-height: var(--input-height, 30px); padding-inline: 12px; font-size: var(--font-ui-small); white-space: nowrap; }
-.pictether-settings-advanced { margin: 0; color: var(--text-muted); font-size: var(--font-ui-small); }
-.pictether-settings-advanced summary { cursor: var(--cursor, pointer); padding: var(--setting-items-padding-y, 12px) var(--setting-items-padding-x, 16px); }
-.pictether-settings-advanced[open] summary { padding-bottom: 4px; }
-.pictether-settings-advanced summary:focus-visible { outline: 2px solid var(--background-modifier-border-focus); outline-offset: -2px; border-radius: var(--radius-s, 4px); }
-.pictether-credentials { margin-top: var(--size-4-6, 24px); }
-.pictether-rk-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: var(--size-4-2, 8px); padding-inline: var(--setting-items-padding-x, 16px); font-size: var(--font-ui-small); font-weight: var(--font-medium, 500); }
-.pictether-rk-list { background: var(--setting-items-background, var(--background-primary)); border: var(--setting-items-border-width, 1px) solid var(--setting-items-border-color, var(--background-modifier-border)); border-radius: var(--setting-items-radius, var(--radius-m, 8px)); overflow: hidden; }
-.pictether-rk-empty { display: flex; align-items: center; gap: 12px; padding: 18px var(--setting-items-padding-x, 16px); color: var(--text-muted); font-size: var(--font-ui-small); }
-.pictether-rk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: 16px var(--setting-items-padding-x, 16px); }
-.pictether-rk-row + .pictether-rk-row { border-top: 1px solid var(--background-modifier-border); }
-.pictether-rk-info { display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-width: 0; }
-.pictether-settings button.pictether-icon-button { width: 30px; height: 30px; flex: 0 0 30px; padding: 6px; border: 0; background: transparent; box-shadow: none; color: var(--text-muted); }
-.pictether-settings button.pictether-icon-button:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
-.pictether-settings button.pictether-icon-button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
-.pictether-settings button.pictether-icon-button:disabled { opacity: 0.4; }
-.pictether-rk-identity { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.pictether-rk-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-ui-small); }
-.pictether-rk-mask { display: block; white-space: nowrap; letter-spacing: 2px; font-size: var(--font-ui-smaller); color: var(--text-faint); line-height: 1.2; }
-.pictether-rk-status { color: var(--text-muted); font-size: var(--font-ui-smaller); white-space: nowrap; }
-.pictether-rk-controls { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
-.pictether-rk-current { font-size: var(--font-ui-smaller); color: var(--text-muted); }
-.pictether-status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex: 0 0 7px; background: var(--text-faint); }
-.pictether-status-dot.is-ok { background: var(--color-green); }
-.pictether-status-dot.is-error { background: var(--color-red); }
-.pictether-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: 20px var(--setting-items-padding-x, 16px); }
-.pictether-stat { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.pictether-stat-value { font-size: 30px; font-weight: var(--font-medium, 500); line-height: 1.2; font-variant-numeric: tabular-nums; color: var(--text-normal); overflow-wrap: anywhere; }
-.pictether-stat .pictether-settings-caption { margin: 0; font-size: var(--font-ui-smaller); overflow-wrap: normal; }
-.pictether-credential-modal { width: min(560px, 92vw); }
-.pictether-credential-modal .pictether-settings-caption { margin: 8px 0 16px; }
+.pictether-settings {
+  container-type: inline-size;
+  container-name: pictether-settings;
+}
+.pictether-settings-section {
+  min-width: 0;
+  margin-bottom: var(--size-4-6, 24px);
+}
+.pictether-settings-section:last-child {
+  margin-bottom: 0;
+}
+.pictether-settings .setting-item-control {
+  min-width: 0;
+}
+.pictether-settings .setting-item-control input[type='text'] {
+  width: clamp(180px, 40cqw, 380px);
+  max-width: 100%;
+}
+.pictether-path-control {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pictether-settings button.pictether-path-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  text-align: end;
+}
+.pictether-path-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+.pictether-path-pencil {
+  display: flex;
+  flex: 0 0 auto;
+  opacity: 0;
+  transition: opacity var(--pictether-motion-duration) ease;
+}
+.pictether-path-display:hover .pictether-path-pencil,
+.pictether-path-display:focus-visible .pictether-path-pencil {
+  opacity: 1;
+}
+.pictether-path-feedback {
+  flex-basis: 100%;
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+}
+.pictether-path-feedback:empty {
+  display: none;
+}
+.pictether-settings .pictether-path-control input[type='text'] {
+  flex: 1 1 160px;
+  width: auto;
+  min-width: 0;
+}
+.pictether-settings .setting-item.pictether-advanced-row {
+  display: block;
+  padding: 0;
+}
+.pictether-settings .pictether-section-actions {
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+.pictether-settings .pictether-settings-actions-group {
+  margin-block: 8px 16px;
+}
+.pictether-settings .pictether-settings-actions-group .setting-items {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.pictether-settings .pictether-vault-setting {
+  flex-direction: row;
+  align-items: center;
+}
+.pictether-settings .pictether-vault-setting .setting-item-control {
+  flex: 0 1 55%;
+  justify-content: flex-end;
+}
+.pictether-settings .pictether-button-setting {
+  flex-direction: row;
+  align-items: center;
+  gap: 0 20px;
+}
+.pictether-settings .pictether-button-setting .setting-item-control {
+  width: auto;
+  flex: 0 0 auto;
+}
+.pictether-settings .pictether-button-setting .setting-item-control > button {
+  width: auto;
+  white-space: nowrap;
+}
+.pictether-readonly-value {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  user-select: text;
+}
+.pictether-settings-caption {
+  margin: var(--size-4-3, 12px) var(--setting-items-padding-x, 16px) 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: var(--line-height-normal, 1.5);
+}
+.pictether-section-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--size-4-2, 8px);
+  margin-top: var(--size-4-2, 8px);
+}
+.pictether-section-actions > button {
+  min-height: var(--input-height, 30px);
+  padding-inline: 12px;
+  font-size: var(--font-ui-small);
+  white-space: nowrap;
+}
+.pictether-settings-advanced {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+.pictether-settings-advanced summary {
+  cursor: var(--cursor, pointer);
+  padding: var(--setting-items-padding-y, 12px) var(--setting-items-padding-x, 16px);
+}
+.pictether-settings-advanced[open] summary {
+  padding-bottom: 4px;
+}
+.pictether-settings-advanced summary:focus-visible {
+  outline: 2px solid var(--background-modifier-border-focus);
+  outline-offset: -2px;
+  border-radius: var(--radius-s, 4px);
+}
+.pictether-credentials {
+  margin: 0;
+  padding-top: var(--size-4-4, 16px);
+}
+@media (hover: none) {
+  .pictether-path-pencil {
+    opacity: 1;
+  }
+}
+.pictether-rk-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: var(--size-4-2, 8px);
+  padding-inline: var(--setting-items-padding-x, 16px);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium, 500);
+}
+.pictether-rk-list {
+  background: transparent;
+  border: 0;
+  overflow: hidden;
+}
+.pictether-rk-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px var(--setting-items-padding-x, 16px);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+.pictether-rk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: 16px var(--setting-items-padding-x, 16px);
+}
+.pictether-rk-row + .pictether-rk-row {
+  border-top: 1px solid var(--background-modifier-border);
+}
+.pictether-rk-info {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.pictether-settings button.pictether-icon-button {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+}
+.pictether-settings button.pictether-icon-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.pictether-settings button.pictether-icon-button:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+.pictether-settings button.pictether-icon-button:disabled {
+  opacity: 0.4;
+}
+.pictether-rk-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.pictether-rk-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-ui-small);
+}
+.pictether-rk-mask {
+  display: block;
+  white-space: nowrap;
+  letter-spacing: 2px;
+  font-size: var(--font-ui-smaller);
+  color: var(--text-faint);
+  line-height: 1.2;
+}
+.pictether-rk-status {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+}
+.pictether-rk-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+.pictether-rk-current {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+.pictether-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 7px;
+  background: var(--text-faint);
+}
+.pictether-status-dot.is-ok {
+  background: var(--color-green);
+}
+.pictether-status-dot.is-error {
+  background: var(--color-red);
+}
+.pictether-statistics-footer .setting-items {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.pictether-stats-summary {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.pictether-credential-modal {
+  width: min(560px, 92vw);
+}
+.pictether-credential-modal .pictether-settings-caption {
+  margin: 8px 0 16px;
+}
 .pictether-credential-modal .modal-content,
 .pictether-reset-modal .modal-content,
-.pictether-confirm-modal .modal-content { container-type: inline-size; }
-.pictether-credential-modal .setting-item-control { min-width: 0; }
-.pictether-credential-modal input { width: clamp(160px, 45cqw, 300px); max-width: 100%; }
-.pictether-credential-feedback { display: flex; align-items: baseline; gap: 9px; margin: 18px 0; font-size: var(--font-ui-small); color: var(--text-muted); overflow-wrap: anywhere; }
-.setting-item.pictether-dialog-actions { flex-direction: row; border: 0; padding-top: 20px; background: transparent; }
-.pictether-dialog-actions > .setting-item-info { display: none; }
-.pictether-dialog-actions .setting-item-control { flex: 1; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.pictether-confirm-modal .modal-content {
+  container-type: inline-size;
+}
+.pictether-credential-modal .setting-item-control {
+  min-width: 0;
+}
+.pictether-credential-modal input {
+  width: clamp(160px, 45cqw, 300px);
+  max-width: 100%;
+}
+.pictether-credential-feedback {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 18px 0;
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+.setting-item.pictether-dialog-actions {
+  flex-direction: row;
+  border: 0;
+  padding-top: 20px;
+  background: transparent;
+}
+.pictether-dialog-actions > .setting-item-info {
+  display: none;
+}
+.pictether-dialog-actions .setting-item-control {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .pictether-credential-modal .setting-item.pictether-dialog-actions .setting-item-control,
 .pictether-reset-modal .setting-item.pictether-dialog-actions .setting-item-control,
-.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control { justify-content: flex-end; }
+.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control {
+  justify-content: flex-end;
+}
 .pictether-credential-modal .setting-item.pictether-dialog-actions .setting-item-control > button,
 .pictether-reset-modal .setting-item.pictether-dialog-actions .setting-item-control > button,
-.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control > button { width: auto; max-width: 100%; }
-.pictether-confirm-modal { width: min(520px, 92vw); }
-.pictether-reset-ack { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; font-size: var(--font-ui-small); line-height: var(--line-height-normal, 1.5); }
-.pictether-reset-ack input { flex: 0 0 auto; margin-top: 3px; }
-.pictether-reset-modal { width: min(580px, 92vw); }
-.pictether-reset-summary { white-space: pre-line; overflow-wrap: anywhere; }
+.pictether-confirm-modal .setting-item.pictether-dialog-actions .setting-item-control > button {
+  width: auto;
+  max-width: 100%;
+}
+.pictether-confirm-modal {
+  width: min(520px, 92vw);
+}
+.pictether-reset-ack {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0;
+  font-size: var(--font-ui-small);
+  line-height: var(--line-height-normal, 1.5);
+}
+.pictether-reset-ack input {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+.pictether-reset-modal {
+  width: min(580px, 92vw);
+}
+.pictether-reset-summary {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
 
 /* Quiet feedback without changing geometry. Theme colors remain host-owned. */
-:is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) {
+:is(
+  .pictether-settings,
+  .pictether-credential-modal,
+  .pictether-reset-modal,
+  .pictether-confirm-modal
+) {
   --pictether-motion-duration: 140ms;
 }
-:is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button {
-  transition: background-color var(--pictether-motion-duration) ease,
+:is(
+    .pictether-settings,
+    .pictether-credential-modal,
+    .pictether-reset-modal,
+    .pictether-confirm-modal
+  )
+  button {
+  transition:
+    background-color var(--pictether-motion-duration) ease,
     color var(--pictether-motion-duration) ease,
     box-shadow var(--pictether-motion-duration) ease,
     transform var(--pictether-motion-duration) ease;
 }
 :is(.pictether-settings, .pictether-credential-modal) input {
-  transition: border-color var(--pictether-motion-duration) ease,
+  transition:
+    border-color var(--pictether-motion-duration) ease,
     box-shadow var(--pictether-motion-duration) ease;
 }
 .pictether-rk-row,
 .pictether-settings-advanced summary {
-  transition: background-color var(--pictether-motion-duration) ease,
+  transition:
+    background-color var(--pictether-motion-duration) ease,
     color var(--pictether-motion-duration) ease;
 }
-.pictether-rk-row:focus-within { background-color: var(--background-modifier-hover); }
+.pictether-rk-row:focus-within {
+  background-color: var(--background-modifier-hover);
+}
 @media (hover: hover) and (pointer: fine) {
-  .pictether-rk-row:hover { background-color: var(--background-modifier-hover); }
-  .pictether-settings-advanced summary:hover { color: var(--text-normal); background-color: var(--background-modifier-hover); }
-  :is(.pictether-settings, .pictether-credential-modal) input:not(:disabled):not(:focus):hover { border-color: var(--background-modifier-border-hover); }
+  .pictether-rk-row:hover {
+    background-color: var(--background-modifier-hover);
+  }
+  .pictether-settings-advanced summary:hover {
+    color: var(--text-normal);
+    background-color: var(--background-modifier-hover);
+  }
+  :is(.pictether-settings, .pictether-credential-modal) input:not(:disabled):not(:focus):hover {
+    border-color: var(--background-modifier-border-hover);
+  }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button:not(:disabled):hover { transform: translateY(-1px); }
-  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) button:not(:disabled):active { transform: translateY(0) scale(0.98); }
+  :is(
+      .pictether-settings,
+      .pictether-credential-modal,
+      .pictether-reset-modal,
+      .pictether-confirm-modal
+    )
+    button:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+  :is(
+      .pictether-settings,
+      .pictether-credential-modal,
+      .pictether-reset-modal,
+      .pictether-confirm-modal
+    )
+    button:not(:disabled):active {
+    transform: translateY(0) scale(0.98);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  :is(.pictether-settings, .pictether-credential-modal, .pictether-reset-modal, .pictether-confirm-modal) { --pictether-motion-duration: 0ms; }
+  :is(
+    .pictether-settings,
+    .pictether-credential-modal,
+    .pictether-reset-modal,
+    .pictether-confirm-modal
+  ) {
+    --pictether-motion-duration: 0ms;
+  }
 }
 @container pictether-settings (max-width: 560px) {
-  .pictether-rk-row { gap: 12px; }
-  .pictether-rk-info { grid-template-columns: 7px minmax(0, 1fr); column-gap: 10px; row-gap: 4px; }
-  .pictether-rk-status { grid-column: 2; }
-  .pictether-rk-controls { align-self: start; gap: 8px; }
-  .pictether-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 20px; }
+  .pictether-rk-row {
+    gap: 12px;
+  }
+  .pictether-rk-info {
+    grid-template-columns: 7px minmax(0, 1fr);
+    gap: 4px 10px;
+  }
+  .pictether-rk-status {
+    grid-column: 2;
+  }
+  .pictether-rk-controls {
+    align-self: start;
+    gap: 8px;
+  }
 }
 @container pictether-settings (max-width: 400px) {
-  .pictether-settings-section .setting-item-control input[type="text"] { width: 100%; }
-  .pictether-vault-setting .setting-item-info { flex: 1; margin-inline-end: 12px; }
-  .pictether-vault-setting .setting-item-control { width: auto; align-self: center; }
+  .pictether-settings-section .setting-item-control input[type='text'] {
+    width: 100%;
+  }
+  .pictether-vault-setting .setting-item-info {
+    flex: 1;
+    margin-inline-end: 12px;
+  }
+  .pictether-vault-setting .setting-item-control {
+    width: auto;
+    align-self: center;
+  }
 }
